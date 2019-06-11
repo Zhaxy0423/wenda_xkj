@@ -1,31 +1,30 @@
 package com.xkj.wenda;
 
-import java.util.Scanner;
-
-
+import java.util.concurrent.TimeUnit;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        String s = sc.nextLine();
-        s.toLowerCase();
-        int l=s.length();
-        for(int i=1;i<l;i++){
-           String b = s.substring(i);
-           if((s.substring(i+1,l)).contains(b)){
-               if(b.compareTo(s.substring(i+1))<=0){
-
-                   System.out.println(s.substring(1,2));
-
-               }else{
-                   s = s.substring(i+1,l);
-               }
-
-           }
-           l=s.length();
+    public static void main(String[] args) throws Exception{
+        Thread previous=Thread.currentThread();
+        for(int i=0;i<10;i++){
+            Thread thread = new Thread(new Domino(previous),String.valueOf(i));
+            thread.start();
+            previous=thread;
         }
-        s.toLowerCase();
-        //System.out.println(s.substring(1,2));
+        TimeUnit.SECONDS.sleep(5);
+        System.out.println(Thread.currentThread().getName()+" terminate.");
+    }
+    static class Domino implements Runnable{
+        private Thread thread;
+        public Domino(Thread thread){
+            this.thread=thread;
+        }
+        public void run(){
+            try{
+                thread.join();
+            }catch (InterruptedException e){
 
+            }
+            System.out.println(Thread.currentThread().getName()+" terminate.");
+        }
     }
 }
